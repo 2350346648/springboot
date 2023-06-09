@@ -94,6 +94,12 @@ public class QueController {
         queService.update(one,wrapper);
         return Result.success();
     }
+
+    /**
+     * 收藏
+     * @param likes
+     * @return
+     */
     @RequestMapping("like")
     public Result like(Likes likes){
         queService.likes(likes);
