@@ -1,5 +1,6 @@
 package com.it.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.it.mapper.NewsMapper;
 import com.it.pojo.News;
 import com.it.service.NewsService;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class NewsServiceImpl implements NewsService {
+public class NewsServiceImpl extends ServiceImpl<NewsMapper,News> implements NewsService {
     @Autowired
     private NewsMapper newsMapper;
     @Override

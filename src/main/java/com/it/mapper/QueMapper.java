@@ -1,5 +1,6 @@
 package com.it.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.it.pojo.Answer;
 import com.it.pojo.Que;
 import org.apache.ibatis.annotations.*;
@@ -7,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
-public interface QueMapper {
+public interface QueMapper extends BaseMapper<Que> {
     @Select("select * from question")
     public List<Que> findAllQue();
     @Insert("insert into question(uid,que,time,uname) values (#{uid},#{que},#{time},#{uname})")

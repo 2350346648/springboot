@@ -1,5 +1,6 @@
 package com.it.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.it.mapper.AnswerMapper;
 import com.it.pojo.Answer;
 import com.it.service.AnswerService;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class AnswerServiceImpl implements AnswerService {
+public class AnswerServiceImpl extends ServiceImpl<AnswerMapper,Answer> implements AnswerService {
 
     @Autowired
     private AnswerMapper answerMapper;

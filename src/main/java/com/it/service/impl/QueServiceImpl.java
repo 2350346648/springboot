@@ -1,6 +1,10 @@
 package com.it.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.it.mapper.LikesMapper;
 import com.it.mapper.QueMapper;
+import com.it.pojo.Likes;
 import com.it.pojo.Que;
 import com.it.service.QueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,70 +15,30 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class QueServiceImpl implements QueService {
+public class QueServiceImpl extends ServiceImpl<QueMapper,Que> implements QueService {
+    @Autowired
+    private LikesMapper likesMapper;
     @Autowired
     private QueMapper queMapper;
     @Override
-    public List<Que> findAllQue() {
-        List<Que> list = queMapper.findAllQue();
-        Collections.reverse(list);
-        return list;
-    }
+    public void likes(Likes likes) {
+        LambdaQueryWrapper<Likes> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(Likes::getUid,likes.getUid()).eq(Likes::getQid,likes.getQid());
 
-    @Override
-    public List<Que> findQueByUid(Que que) {
-
-        return queMapper.findQueByUid(que);
-    }
-
-    @Override
-    public Boolean add(Que que){
-        que.setTime(LocalDateTime.now());
-        return queMapper.add(que);
-    }
-
-    @Override
-    public Que findQueByQid(Que que) {
-        System.out.println(que);
-        return queMapper.findQueByQid(que);
-    }
-
-    @Override
-    public List<Que> findQueByQue(String que) {
-        List<Que> queByQue = queMapper.findQueByQue(que);
-        return queByQue;
-    }
-
-    @Override
-    public Que addGood(Que que) {
-        Que queByQid = queMapper.findQueByQid(que);
-        System.out.println("初始good"+queByQid);
-        queByQid.setGood(queByQid.getGood()+1);
-        System.out.println("+1 good"+queByQid);
-        queMapper.addGood(queByQid);
-
-        return queByQid;
-    }
-
-    @Override
-    public Boolean like(Que que) {
-        Que like = queMapper.findLike(que);
-        if(like==null){
-            queMapper.addLike(que);
-            Que que1 = queMapper.findQueByQid(que);
-            que1.setLikes(que1.getLikes()+1);
-            System.out.println("like+1"+que1);
-            queMapper.addQueLike(que1);
-            return true;
+        LambdaQueryWrapper<Que> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Que::getQid,likes.getQid());
+        Que oneQue = queMapper.selectOne(queryWrapper);
+        Likes one = likesMapper.selectOne(wrapper);
+        if (one==null){
+            likesMapper.insert(likes);
+            oneQue.setLikes(oneQue.getLikes()+1);
+            queMapper.update(oneQue,queryWrapper);
+            return;
         }
         else {
-            queMapper.deleteLike(que);
-            Que que1 = queMapper.findQueByQid(que);
-            que1.setLikes(que1.getLikes()-1);
-            System.out.println("like-1"+que1);
-            queMapper.addQueLike(que1);
-            return false;
+            likesMapper.delete(wrapper);
+            oneQue.setLikes(oneQue.getLikes()-1);
+            queMapper.update(oneQue,queryWrapper);
         }
-
     }
 }
