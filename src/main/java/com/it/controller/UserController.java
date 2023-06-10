@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.channels.MulticastChannel;
 
@@ -33,7 +37,7 @@ public class UserController {
         //获取后缀
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
         //以uid重命名
-        String name = uid+suffix;
+        String name = uid+".jpg";
         //创建目录
         File dir = new File(basePath);
         if (!dir.exists()){
@@ -47,6 +51,26 @@ public class UserController {
             e.printStackTrace();
         }
         return Result.success();
+    }
+    @RequestMapping("getHead")
+    public void getHead(String uid,HttpServletResponse response){
+        try {
+            FileInputStream fileInputStream = new FileInputStream(new File(basePath+uid+".jpg"));
+            ServletOutputStream outputStream = response.getOutputStream();
+
+            int len = 0;
+            byte[] bytes = new byte[1024];
+            while ((len=fileInputStream.read(bytes))!=-1){
+                outputStream.write(bytes,0,len);
+                outputStream.flush();
+            }
+
+            outputStream.close();
+            fileInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @RequestMapping("register")
