@@ -4,13 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.it.pojo.Likes;
 import com.it.pojo.Que;
 import com.it.pojo.Result;
+import com.it.pojo.User;
 import com.it.service.AnswerService;
+import com.it.service.LikesServive;
 import com.it.service.QueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +22,8 @@ public class QueController {
 
     @Autowired
     private QueService queService;
+    @Autowired
+    private LikesServive likesServive;
 
     /**
      * 查询所有问题
@@ -104,5 +109,24 @@ public class QueController {
     public Result like(Likes likes){
         queService.likes(likes);
         return Result.success();
+    }
+
+    /**
+     * 查询收藏列表
+     * @param user
+     * @return
+     */
+    @RequestMapping("findLikes")
+    public Result findLikes(User user){
+        LambdaQueryWrapper<Likes> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(Likes::getUid,user.getUid());
+        List<Likes> list = likesServive.list(wrapper);
+        List<Que> queList = new ArrayList<>();
+        for (Likes likes : list) {
+            LambdaQueryWrapper<Que> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Que::getQid,likes.getQid());
+            queList.add(queService.getOne(queryWrapper));
+        }
+        return Result.success(queList);
     }
 }
