@@ -26,7 +26,6 @@ public class QueController {
      */
    @RequestMapping("findAllQue")
    public Result findAllQue(){
-       System.out.println(5555);
        List<Que> list = queService.list(null);
        return Result.success(list);
    }
