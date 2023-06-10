@@ -55,18 +55,44 @@ public class UserController {
     @RequestMapping("getHead")
     public void getHead(String uid,HttpServletResponse response){
         try {
-            FileInputStream fileInputStream = new FileInputStream(new File(basePath+uid+".jpg"));
-            ServletOutputStream outputStream = response.getOutputStream();
+            //是否上传头像
+            File dir = new File(basePath+uid+".jpg");
+            //若无，返回默认头像
+            if (!dir.exists()){
+                //输入流读取文件内容
+                FileInputStream fileInputStream = new FileInputStream(new File(basePath+"moren.jpg"));
+                //输出流写回浏览器
+                ServletOutputStream outputStream = response.getOutputStream();
 
-            int len = 0;
-            byte[] bytes = new byte[1024];
-            while ((len=fileInputStream.read(bytes))!=-1){
-                outputStream.write(bytes,0,len);
-                outputStream.flush();
+                int len = 0;
+                byte[] bytes = new byte[1024];
+                while ((len=fileInputStream.read(bytes))!=-1){
+                    outputStream.write(bytes,0,len);
+                    outputStream.flush();
+                }
+
+                outputStream.close();
+                fileInputStream.close();
+                return;
+            }
+            //若有，返回用户头像
+            else {
+                //输入流读取文件内容
+                FileInputStream fileInputStream = new FileInputStream(new File(basePath+uid+".jpg"));
+                //输出流写回浏览器
+                ServletOutputStream outputStream = response.getOutputStream();
+
+                int len = 0;
+                byte[] bytes = new byte[1024];
+                while ((len=fileInputStream.read(bytes))!=-1){
+                    outputStream.write(bytes,0,len);
+                    outputStream.flush();
+                }
+
+                outputStream.close();
+                fileInputStream.close();
             }
 
-            outputStream.close();
-            fileInputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
