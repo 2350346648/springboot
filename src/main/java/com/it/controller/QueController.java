@@ -20,10 +20,6 @@ public class QueController {
     @Autowired
     private QueService queService;
 
-    /**
-     * 查询所有问题
-     * @return
-     */
    @RequestMapping("findAllQue")
    public Result findAllQue(){
        List<Que> list = queService.list(null);
