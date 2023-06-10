@@ -20,8 +20,13 @@ public class QueController {
     @Autowired
     private QueService queService;
 
+    /**
+     * 查询所有问题
+     * @return
+     */
    @RequestMapping("findAllQue")
    public Result findAllQue(){
+       System.out.println(5555);
        List<Que> list = queService.list(null);
        return Result.success(list);
    }
