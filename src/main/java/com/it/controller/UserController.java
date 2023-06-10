@@ -52,6 +52,12 @@ public class UserController {
         }
         return Result.success();
     }
+
+    /**
+     * 获取头像
+     * @param uid
+     * @param response
+     */
     @RequestMapping("getHead")
     public void getHead(String uid,HttpServletResponse response){
         try {
