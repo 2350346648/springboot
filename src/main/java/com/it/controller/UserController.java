@@ -31,7 +31,6 @@ public class UserController {
      */
     @RequestMapping("head")
     public Result head(MultipartFile file){
-        System.out.println(55555);
         String uid = "1";
         //获取原始文件名
         String originalFilename = file.getOriginalFilename();
