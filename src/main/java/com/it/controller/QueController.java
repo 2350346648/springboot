@@ -95,9 +95,10 @@ public class QueController {
         LambdaQueryWrapper<Que> wrapper = new LambdaQueryWrapper();
         wrapper.eq(Que::getQid,que.getQid());
         Que one = queService.getOne(wrapper);
-        one.setGood(one.getGood()+1);
+        int good = one.getGood()+1;
+        one.setGood(good);
         queService.update(one,wrapper);
-        return Result.success();
+        return Result.success(good);
     }
 
     /**
