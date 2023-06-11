@@ -26,12 +26,13 @@ public class UserController {
 
     /**
      * 上传头像
-     * @param uid
      * @param file
      * @return
      */
     @RequestMapping("head")
-    public Result head(String uid,MultipartFile file){
+    public Result head(MultipartFile file){
+        System.out.println(55555);
+        String uid = "1";
         //获取原始文件名
         String originalFilename = file.getOriginalFilename();
         //获取后缀
