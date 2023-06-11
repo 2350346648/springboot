@@ -30,8 +30,8 @@ public class UserController {
      * @return
      */
     @RequestMapping("head")
-    public Result head(MultipartFile file){
-        String uid = "1";
+    public Result head(String uid,MultipartFile file){
+        System.out.println(uid+"-------------");
         //获取原始文件名
         String originalFilename = file.getOriginalFilename();
         //获取后缀
