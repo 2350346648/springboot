@@ -21,7 +21,7 @@ public class QueServiceImpl extends ServiceImpl<QueMapper,Que> implements QueSer
     @Autowired
     private QueMapper queMapper;
     @Override
-    public void likes(Likes likes) {
+    public int likes(Likes likes) {
         LambdaQueryWrapper<Likes> wrapper = new LambdaQueryWrapper();
         wrapper.eq(Likes::getUid,likes.getUid()).eq(Likes::getQid,likes.getQid());
 
@@ -33,12 +33,13 @@ public class QueServiceImpl extends ServiceImpl<QueMapper,Que> implements QueSer
             likesMapper.insert(likes);
             oneQue.setLikes(oneQue.getLikes()+1);
             queMapper.update(oneQue,queryWrapper);
-            return;
+            return 1;
         }
         else {
             likesMapper.delete(wrapper);
             oneQue.setLikes(oneQue.getLikes()-1);
             queMapper.update(oneQue,queryWrapper);
+            return 0;
         }
     }
 }

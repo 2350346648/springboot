@@ -7,6 +7,6 @@ import com.it.pojo.Que;
 import java.util.List;
 
 public interface QueService extends IService<Que> {
-    public void likes(Likes likes);
+    public int likes(Likes likes);
 }
 

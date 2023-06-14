@@ -5,17 +5,14 @@ import com.it.pojo.Likes;
 import com.it.pojo.Que;
 import com.it.pojo.Result;
 import com.it.pojo.User;
-import com.it.service.AnswerService;
 import com.it.service.LikesServive;
 import com.it.service.QueService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class QueController {
@@ -108,8 +105,8 @@ public class QueController {
      */
     @RequestMapping("like")
     public Result like(Likes likes){
-        queService.likes(likes);
-        return Result.success();
+        int likes1 = queService.likes(likes);
+        return Result.success(likes1);
     }
 
     /**
