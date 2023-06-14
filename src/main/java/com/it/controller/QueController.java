@@ -103,7 +103,7 @@ public class QueController {
      * @param likes
      * @return
      */
-    @RequestMapping("like")
+    @RequestMapping("likes")
     public Result like(Likes likes){
         int likes1 = queService.likes(likes);
         return Result.success(likes1);
