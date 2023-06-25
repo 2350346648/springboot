@@ -1,5 +1,6 @@
 package com.it.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.it.pojo.Result;
 import com.it.pojo.User;
 import com.it.service.UserService;
@@ -16,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.channels.MulticastChannel;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -105,20 +107,35 @@ public class UserController {
 
     }
 
+    /**
+     * 注册
+     * @param user
+     * @return
+     */
     @RequestMapping("register")
     public Result register(User user){
-        System.out.println(user);
-        boolean register = userService.register(user);
-        if(register)
-            return Result.success();
+        LambdaQueryWrapper<User> wrapper =  new LambdaQueryWrapper<>();
+        wrapper.eq(User::getUid,user.getUid());
+        List<User> list = userService.list(wrapper);
+        if(list==null)
+            return Result.success("注册成功");
         else
             return Result.error("账号重复");
     }
+
+    /**
+     * 登录
+     * @param user
+     * @return
+     */
     @RequestMapping("logon")
     public Result logon( User user){
-        User logon = userService.logon(user);
-        if(logon ==null) return Result.error("账号密码错误");
-        return Result.success(logon);
+        LambdaQueryWrapper<User> wrapper =  new LambdaQueryWrapper<>();
+        wrapper.eq(User::getUid,user.getUid()).eq(User::getPassword,user.getPassword());
+        List<User> list = userService.list(wrapper);
+
+        if(list ==null) return Result.error("账号密码错误");
+        return Result.success(list);
     }
 
 }

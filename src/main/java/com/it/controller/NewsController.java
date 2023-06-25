@@ -18,7 +18,6 @@ public class NewsController {
     }
     @RequestMapping("findNewsByUid")
     public Result findNewsByUid(News news){
-
         return  Result.success(newsService.findAllNewsByUid(news));
     }
 
