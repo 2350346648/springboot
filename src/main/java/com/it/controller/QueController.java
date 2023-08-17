@@ -64,7 +64,7 @@ public class QueController {
     @RequestMapping("findQueByQid")
     public Result findQueByQid(Que que){
         LambdaQueryWrapper<Que> queryWrapper = new LambdaQueryWrapper();
-        queryWrapper.eq(Que::getQid,que.getQid());
+        queryWrapper.eq(Que::getId,que.getId());
         Que one = queService.getOne(queryWrapper);
         return Result.success(one);
     }
@@ -82,21 +82,7 @@ public class QueController {
         return Result.success(list);
     }
 
-    /**
-     * 点赞
-     * @param que
-     * @return
-     */
-    @RequestMapping("addGood")
-    public Result addGood(Que que){
-        LambdaQueryWrapper<Que> wrapper = new LambdaQueryWrapper();
-        wrapper.eq(Que::getQid,que.getQid());
-        Que one = queService.getOne(wrapper);
-        int good = one.getGood()+1;
-        one.setGood(good);
-        queService.update(one,wrapper);
-        return Result.success(good);
-    }
+
 
     /**
      * 收藏
@@ -106,6 +92,7 @@ public class QueController {
     @RequestMapping("likes")
     public Result like(Likes likes){
         int likes1 = queService.likes(likes);
+        //1为增加，0为删除
         return Result.success(likes1);
     }
 
@@ -117,12 +104,12 @@ public class QueController {
     @RequestMapping("findLikes")
     public Result findLikes(User user){
         LambdaQueryWrapper<Likes> wrapper = new LambdaQueryWrapper();
-        wrapper.eq(Likes::getUid,user.getUid());
+        wrapper.eq(Likes::getUid,user.getId());
         List<Likes> list = likesServive.list(wrapper);
         List<Que> queList = new ArrayList<>();
         for (Likes likes : list) {
             LambdaQueryWrapper<Que> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Que::getQid,likes.getQid());
+            queryWrapper.eq(Que::getId,likes.getQid());
             queList.add(queService.getOne(queryWrapper));
         }
         return Result.success(queList);

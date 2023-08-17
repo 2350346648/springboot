@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Que {
-    private Integer qid;
-    private Integer good;
-    private Integer likes;
+    private Integer id;
     private String uid;
     private String uname;
     private String que;
     private LocalDateTime time;
+
+    private Integer likes;
 }

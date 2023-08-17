@@ -12,11 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.channels.MulticastChannel;
 import java.util.List;
 
 @RestController
@@ -114,13 +113,19 @@ public class UserController {
      */
     @RequestMapping("register")
     public Result register(User user){
+        System.out.println("传入参数"+user);
         LambdaQueryWrapper<User> wrapper =  new LambdaQueryWrapper<>();
         wrapper.eq(User::getUid,user.getUid());
-        List<User> list = userService.list(wrapper);
-        if(list==null)
+        User one = userService.getOne(wrapper);
+        System.out.println("查找参数"+one);
+        if (one==null){
+
+            userService.save(user);
             return Result.success("注册成功");
-        else
+        }
+        else {
             return Result.error("账号重复");
+        }
     }
 
     /**
@@ -129,13 +134,25 @@ public class UserController {
      * @return
      */
     @RequestMapping("logon")
-    public Result logon( User user){
+    public Result logon(User user, HttpSession session){
         LambdaQueryWrapper<User> wrapper =  new LambdaQueryWrapper<>();
-        wrapper.eq(User::getUid,user.getUid()).eq(User::getPassword,user.getPassword());
-        List<User> list = userService.list(wrapper);
+        wrapper.eq(User::getUid,user.getUid());
+        User one = userService.getOne(wrapper);
 
-        if(list ==null) return Result.error("账号密码错误");
-        return Result.success(list);
+        if (one==null){
+            return Result.error("账号不存在");
+        }
+
+            if (one.getPassword()==user.getPassword())
+                return Result.error("密码错误");
+            else {
+                session.setAttribute("user", one);
+                System.out.println("-----------------");
+                System.out.println(session.getAttribute("user"));
+            }
+        return Result.success(one);
+
+
     }
 
 }

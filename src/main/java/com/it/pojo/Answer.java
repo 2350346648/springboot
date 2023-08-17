@@ -10,12 +10,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Answer {
-    private int qid;
+    private Integer id;
+    private Integer qid;
     private String uid;
-
-
     private String uname;
-    private String head;
     private String answer;
     private LocalDateTime time;
 }

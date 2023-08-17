@@ -6,6 +6,7 @@ import com.it.mapper.LikesMapper;
 import com.it.mapper.QueMapper;
 import com.it.pojo.Likes;
 import com.it.pojo.Que;
+import com.it.service.LikesServive;
 import com.it.service.QueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,29 +18,40 @@ import java.util.List;
 @Service
 public class QueServiceImpl extends ServiceImpl<QueMapper,Que> implements QueService {
     @Autowired
-    private LikesMapper likesMapper;
-    @Autowired
-    private QueMapper queMapper;
+    private LikesServive likesServive;
+
+
+    /**
+     *
+     * 收藏
+     * @param likes
+     * @return
+     */
     @Override
     public int likes(Likes likes) {
+        //查询是否已经收藏
         LambdaQueryWrapper<Likes> wrapper = new LambdaQueryWrapper();
         wrapper.eq(Likes::getUid,likes.getUid()).eq(Likes::getQid,likes.getQid());
+        Likes one = likesServive.getOne(wrapper);
 
-        LambdaQueryWrapper<Que> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Que::getQid,likes.getQid());
-        Que oneQue = queMapper.selectOne(queryWrapper);
-        Likes one = likesMapper.selectOne(wrapper);
         if (one==null){
-            likesMapper.insert(likes);
-            oneQue.setLikes(oneQue.getLikes()+1);
-            queMapper.update(oneQue,queryWrapper);
+            likesServive.save(likes);
+            LambdaQueryWrapper<Que> likesLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            likesLambdaQueryWrapper.eq(Que::getId,likes.getQid());
+            Que que = this.getOne(likesLambdaQueryWrapper);
+            que.setLikes(que.getLikes()+1);
+            this.updateById(que);
             return 1;
         }
         else {
-            likesMapper.delete(wrapper);
-            oneQue.setLikes(oneQue.getLikes()-1);
-            queMapper.update(oneQue,queryWrapper);
+            likesServive.removeById(one.getId());
+            LambdaQueryWrapper<Que> likesLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            likesLambdaQueryWrapper.eq(Que::getId,likes.getQid());
+            Que que = this.getOne(likesLambdaQueryWrapper);
+            que.setLikes(que.getLikes()-1);
+            this.updateById(que);
             return 0;
         }
+
     }
 }

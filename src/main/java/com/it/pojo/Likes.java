@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Likes {
-    private String uid;
-    private int qid;
+    private Integer uid;
+    private Integer qid;
+    private Integer id;
 }
