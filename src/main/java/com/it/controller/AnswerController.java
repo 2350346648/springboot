@@ -2,6 +2,8 @@ package com.it.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.it.pojo.Answer;
+import com.it.pojo.Good;
+import com.it.pojo.Likes;
 import com.it.pojo.Result;
 import com.it.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ public class AnswerController {
     public AnswerService answerService;
 
     /**
-     * 查询问题的回答
+     * 查询问题详情的回答
      * @param answer
      * @return
      */
@@ -36,7 +38,18 @@ public class AnswerController {
      */
     @RequestMapping("addAnswer")
     public Result addAnswer(Answer answer){
-        answerService.addAnswer(answer);
+        answerService.save(answer);
         return Result.success();
+    }
+    /**
+     * 点赞
+     * @param good
+     * @return
+     */
+    @RequestMapping("good")
+    public Result good(Good good){
+        int good1 = answerService.good(good);
+        //1为增加，0为删除
+        return Result.success(good1);
     }
 }

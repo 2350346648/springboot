@@ -33,16 +33,15 @@ public class QueController {
    }
 
     /**
-     * 查询用户发布的问题
+     * 查询用户的所有问题信息
      * @param que
      * @return
      */
     @RequestMapping("findQueByUid")
     public Result findQueByUid(Que que){
-        LambdaQueryWrapper<Que> queryWrapper = new LambdaQueryWrapper();
-        queryWrapper.eq(Que::getUid,que.getUid());
-        List<Que> list = queService.list(queryWrapper);
-        return Result.success(list);
+        LambdaQueryWrapper<Que> wrapper= new LambdaQueryWrapper<>();
+        wrapper.eq(Que::getUserid,que.getUserid());
+        return Result.success(queService.list(wrapper));
     }
 
     /**
@@ -63,9 +62,7 @@ public class QueController {
      */
     @RequestMapping("findQueByQid")
     public Result findQueByQid(Que que){
-        LambdaQueryWrapper<Que> queryWrapper = new LambdaQueryWrapper();
-        queryWrapper.eq(Que::getId,que.getId());
-        Que one = queService.getOne(queryWrapper);
+        Que one = queService.getById(que.getId());
         return Result.success(one);
     }
 
@@ -102,9 +99,9 @@ public class QueController {
      * @return
      */
     @RequestMapping("findLikes")
-    public Result findLikes(User user){
+    public Result findLikes(Likes like){
         LambdaQueryWrapper<Likes> wrapper = new LambdaQueryWrapper();
-        wrapper.eq(Likes::getUid,user.getId());
+        wrapper.eq(Likes::getUid,like.getUid());
         List<Likes> list = likesServive.list(wrapper);
         List<Que> queList = new ArrayList<>();
         for (Likes likes : list) {

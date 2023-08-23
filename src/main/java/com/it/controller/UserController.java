@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.it.pojo.Result;
 import com.it.pojo.User;
 import com.it.service.UserService;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
-
+@Slf4j
 @RestController
 public class UserController {
     @Autowired
@@ -56,16 +58,20 @@ public class UserController {
 
     /**
      * 获取头像
-     * @param uid
+     * @param user
      * @param response
      */
     @RequestMapping("getHead")
-    public void getHead(String uid,HttpServletResponse response){
+    public void getHead(User user,HttpServletResponse response){
+        log.info("获取头像");
         try {
-            //是否上传头像
-            File dir = new File(basePath+uid+".jpg");
+            //是否已经上传头像
+            File dir = new File(basePath+user.getId()+".jpg");
             //若无，返回默认头像
             if (!dir.exists()){
+                log.info("返回默认头像");
+
+                log.info(String.valueOf(user));
                 //输入流读取文件内容
                 FileInputStream fileInputStream = new FileInputStream(new File(basePath+"moren.jpg"));
                 //输出流写回浏览器
@@ -84,8 +90,9 @@ public class UserController {
             }
             //若有，返回用户头像
             else {
+                log.info("返回上传头像");
                 //输入流读取文件内容
-                FileInputStream fileInputStream = new FileInputStream(new File(basePath+uid+".jpg"));
+                FileInputStream fileInputStream = new FileInputStream(new File(basePath+user.getId()+".jpg"));
                 //输出流写回浏览器
                 ServletOutputStream outputStream = response.getOutputStream();
 
@@ -115,13 +122,14 @@ public class UserController {
     public Result register(User user){
         System.out.println("传入参数"+user);
         LambdaQueryWrapper<User> wrapper =  new LambdaQueryWrapper<>();
-        wrapper.eq(User::getUid,user.getUid());
+        wrapper.eq(User::getUsername,user.getUsername());
         User one = userService.getOne(wrapper);
-        System.out.println("查找参数"+one);
         if (one==null){
-
             userService.save(user);
-            return Result.success("注册成功");
+            LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(User::getUsername,user.getUsername());
+
+            return Result.success(userService.getOne(lambdaQueryWrapper));
         }
         else {
             return Result.error("账号重复");
@@ -136,16 +144,18 @@ public class UserController {
     @RequestMapping("logon")
     public Result logon(User user, HttpSession session){
         LambdaQueryWrapper<User> wrapper =  new LambdaQueryWrapper<>();
-        wrapper.eq(User::getUid,user.getUid());
+        wrapper.eq(User::getUsername,user.getUsername());
         User one = userService.getOne(wrapper);
 
         if (one==null){
             return Result.error("账号不存在");
         }
 
-            if (one.getPassword()==user.getPassword())
+            if (!one.getPassword().equals(user.getPassword()))
                 return Result.error("密码错误");
             else {
+                System.out.println("-----------------");
+                System.out.println(session.getAttribute("user"));
                 session.setAttribute("user", one);
                 System.out.println("-----------------");
                 System.out.println(session.getAttribute("user"));

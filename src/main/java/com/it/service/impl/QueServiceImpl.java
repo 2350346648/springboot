@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class QueServiceImpl extends ServiceImpl<QueMapper,Que> implements QueService {
     @Autowired
-    private LikesServive likesServive;
+    private LikesServive likesService;
 
 
     /**
@@ -32,10 +32,10 @@ public class QueServiceImpl extends ServiceImpl<QueMapper,Que> implements QueSer
         //查询是否已经收藏
         LambdaQueryWrapper<Likes> wrapper = new LambdaQueryWrapper();
         wrapper.eq(Likes::getUid,likes.getUid()).eq(Likes::getQid,likes.getQid());
-        Likes one = likesServive.getOne(wrapper);
+        Likes one = likesService.getOne(wrapper);
 
         if (one==null){
-            likesServive.save(likes);
+            likesService.save(likes);
             LambdaQueryWrapper<Que> likesLambdaQueryWrapper = new LambdaQueryWrapper<>();
             likesLambdaQueryWrapper.eq(Que::getId,likes.getQid());
             Que que = this.getOne(likesLambdaQueryWrapper);
@@ -44,7 +44,7 @@ public class QueServiceImpl extends ServiceImpl<QueMapper,Que> implements QueSer
             return 1;
         }
         else {
-            likesServive.removeById(one.getId());
+            likesService.remove(wrapper);
             LambdaQueryWrapper<Que> likesLambdaQueryWrapper = new LambdaQueryWrapper<>();
             likesLambdaQueryWrapper.eq(Que::getId,likes.getQid());
             Que que = this.getOne(likesLambdaQueryWrapper);

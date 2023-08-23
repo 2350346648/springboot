@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Likes {
+public class Good {
     private Long uid;
-    private Long qid;
-
+    private Long aid;
 }

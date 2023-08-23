@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    private Integer id;
-    private String uid;
-    private String name;
+    private Long id;
+
+    private String username;
     private String password;
 }
